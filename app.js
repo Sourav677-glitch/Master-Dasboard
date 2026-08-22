@@ -1,4 +1,4 @@
-const MASTER_SCRIPT_URL='https://script.google.com/macros/s/AKfycbyxwWSLIjQLTczZ-qXEA-C5FJC4fWasA8JGtFqoSMgAzXeOKrC-1QcY1LAP3sZoweME/exec';
+const MASTER_SCRIPT_URL='https://script.google.com/macros/s/AKfycbxi1OS8Pp4DQbkR5zaL_UhfQe-2ns7A3NRml4MRFqVc6xr_CKT-lME_nPF3PREq_8A/exec';
 
 document.addEventListener('DOMContentLoaded', () => {
   if (document.body.classList.contains('login-page')) initLogin();
