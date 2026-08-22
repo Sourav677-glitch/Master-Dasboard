@@ -1,0 +1,183 @@
+function doPost(e) {
+  const sh = SpreadsheetApp.getActive().getSheetByName("Data");
+  const action = e.parameter.action;
+
+  // =========================
+  // ✅ LOGIN SYSTEM
+  // =========================
+  if (action === "login") {
+    const username = e.parameter.username;
+    const password = e.parameter.password;
+
+    const users = [
+      { user: "Admin", pass: "Wbnhm@1994", role: "admin" },
+      { user: "User", pass: "User@1234", role: "user" }
+    ];
+
+    const found = users.find(u => u.user === username && u.pass === password);
+
+    if (found) {
+      return ContentService.createTextOutput(
+        JSON.stringify({ status: "success", role: found.role })
+      ).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    return ContentService.createTextOutput(
+      JSON.stringify({ status: "fail" })
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // =========================
+  // ❗ CHECK SHEET
+  // =========================
+  if (!sh) {
+    return ContentService.createTextOutput("NO_SHEET");
+  }
+
+  // =========================
+  // 📥 GET FORM DATA
+  // =========================
+  const receive = e.parameter.receive || "";
+  const handover = e.parameter.handover || "";
+  const cell = e.parameter.cell || "";
+  const problemCategory = e.parameter.problemCategory || "";
+  const problem = e.parameter.problem || "";
+  const solution = e.parameter.solution || "";
+  const remarks = e.parameter.remarks || "";
+  const serial = e.parameter.serial || "";
+
+  // =========================
+  // ✅ CREATE ENTRY
+  // =========================
+  if (action === "create") {
+  sh.appendRow([
+    Utilities.getUuid(),               // ID
+    new Date(),                        // Created Date
+    e.parameter.receive || "",         // Receive Date
+    e.parameter.handover || "",        // Handover Date
+    e.parameter.cell || "",            // Cell
+    e.parameter.problemCategory || "", // Problem Category
+    e.parameter.problem || "",         // Problem
+    e.parameter.solution || "",        // Solution
+    e.parameter.remarks || "",         // Remarks
+    e.parameter.serial || "",          // Serial
+    "Pending"                          // Status
+  ]);
+  return ok();
+}
+// =========================
+// 📂 BULK NEW PROCUREMENT UPLOAD
+// =========================
+if (action === "bulkUpload") {
+  const receive = e.parameter.receive || "";
+  const cell = e.parameter.cell || "";
+  const remarks = e.parameter.remarks || "";
+  const serialsRaw = e.parameter.serials || "";
+
+  if (!serialsRaw) {
+    return ContentService.createTextOutput(
+      JSON.stringify({ status: "fail", message: "No serials received" })
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const serials = serialsRaw
+    .split("||")
+    .map(s => s.trim())
+    .filter(s => s);
+
+  if (serials.length === 0) {
+    return ContentService.createTextOutput(
+      JSON.stringify({ status: "fail", message: "No valid serials found" })
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const rowsToInsert = serials.map(serial => [
+    Utilities.getUuid(),   // ID
+    new Date(),            // Created Date
+    receive,               // Receive Date
+    "",                    // Handover Date
+    cell,                  // Cell
+    "New Procurement",     // Problem Category / Problem field depending on your sheet structure
+    "New Procurement",     // Problem Description
+    "",                    // Solution
+    remarks,               // Remarks
+    serial,                // Serial Number
+    "Pending"              // Status
+  ]);
+
+  sh.getRange(sh.getLastRow() + 1, 1, rowsToInsert.length, rowsToInsert[0].length)
+    .setValues(rowsToInsert);
+
+  return ContentService.createTextOutput(
+    JSON.stringify({ status: "success", count: serials.length })
+  ).setMimeType(ContentService.MimeType.JSON);
+}
+  // =========================
+  // 🔍 FIND ROW BY ID
+  // =========================
+  const rows = sh.getDataRange().getValues();
+
+  for (let i = 1; i < rows.length; i++) {
+    if (String(rows[i][0]) === String(e.parameter.id)) {
+
+      // =========================
+      // ✏️ UPDATE ENTRY
+      // =========================
+      if (action === "update") {
+  sh.getRange(i + 1, 3, 1, 8).setValues([[
+    e.parameter.receive || "",
+    e.parameter.handover || "",
+    e.parameter.cell || "",
+    e.parameter.problemCategory || "",
+    e.parameter.problem || "",
+    e.parameter.solution || "",
+    e.parameter.remarks || "",
+    e.parameter.serial || ""
+  ]]);
+}
+
+      // =========================
+      // ❌ DELETE ENTRY
+      // =========================
+      if (action === "delete") {
+        sh.deleteRow(i + 1);
+      }
+
+      // =========================
+      // 🔄 STATUS CHANGE
+      // =========================
+      if (action === "status") {
+        sh.getRange(i + 1, 11).setValue(e.parameter.status); // K = Status
+      }
+
+      break;
+    }
+  }
+
+  return ok();
+}
+
+// =========================
+// 📥 GET DATA (FOR TABLE)
+// =========================
+function doGet() {
+  const sh = SpreadsheetApp.getActive().getSheetByName("Data");
+
+  if (!sh) {
+    return ContentService.createTextOutput("NO_SHEET");
+  }
+
+  const data = sh.getDataRange().getValues();
+  data.shift(); // remove header row
+
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+// =========================
+// ✅ COMMON RESPONSE
+// =========================
+function ok() {
+  return ContentService.createTextOutput("OK");
+}

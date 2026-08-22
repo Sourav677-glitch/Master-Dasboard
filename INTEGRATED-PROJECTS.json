@@ -1,0 +1,14 @@
+{
+  "projects": [
+    {
+      "name": "IT Dashboard Tracking",
+      "path": "apps/it-maintenance/",
+      "role": "admin"
+    },
+    {
+      "name": "TM Report Dashboard",
+      "path": "apps/tm-report/",
+      "role": "both"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+MASTER DASHBOARD — GOOGLE APPS SCRIPT LOGIN SETUP
+==================================================
+
+1. Create/open your Google Apps Script project:
+   Master Dashboard Authentication
+
+2. Replace Code.gs with:
+   MASTER-DASHBOARD-APPSCRIPT-Code.gs
+
+3. Passwords are changed here:
+
+   const MASTER_USERS = [
+     { username: 'Admin', password: 'YOUR_ADMIN_PASSWORD', role: 'admin' },
+     { username: 'User',  password: 'YOUR_USER_PASSWORD',  role: 'user' }
+   ];
+
+4. Deploy:
+   Deploy -> New deployment
+   Type: Web app
+   Execute as: Me
+   Who has access: Anyone
+   Deploy
+
+5. The current Master Dashboard app.js is already configured with:
+   https://script.google.com/macros/s/AKfycby0iVSlF24pDYfyh3yXjP5QcOIUWAHIieGpx-fzba3Neif74z6OAih0qfy9fKLgEsb6/exec
+
+   If your deployment URL is different, replace MASTER_SCRIPT_URL at
+   the first line of app.js.
+
+6. IMPORTANT:
+   After changing Code.gs, use:
+   Deploy -> Manage deployments -> Edit -> New version -> Deploy.
+
+7. The login uses JSONP instead of fetch() so it works when the frontend
+   is hosted on GitHub Pages and the authentication backend is Apps Script.
+
+8. The username field has browser autocomplete/autofill disabled.
+
+9. Portal links use native target="_blank" navigation. The selected portal opens in a NEW TAB and the Master Dashboard remains in the original tab. There is no same-tab popup-blocker fallback.

@@ -1,0 +1,40 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Health &amp; Family Welfare — Master Dashboard</title><link rel="stylesheet" href="styles.css"></head><body class="dashboard-page"><div class="portal-bg portal-bg-saffron"></div><div class="portal-bg portal-bg-green"></div><header class="portal-header"><div class="brand-block"><img src="National Emblem.png" alt="West Bengal Government" class="brand-logo"><div><div class="eyebrow">GOVERNMENT OF WEST BENGAL • HEALTH &amp; FAMILY WELFARE DEPARTMENT</div><h1>Integrated Digital Health Master Dashboard</h1><div class="portal-subtitle">National Health Mission • Unified Application Portal</div></div></div><div class="header-actions"><div class="user-chip"><span class="live-dot"></span><div><strong id="userName">User</strong><small id="userRole">Authorized User</small></div></div><button class="logout-btn" id="logoutBtn">Logout</button></div></header><main class="portal-main"><section class="welcome-row"><div><h2>Application Master Portal</h2><p>Access all connected departmental web applications from one secure dashboard.</p></div><div class="clock-card"><span>LIVE</span><strong id="liveClock">--:--:--</strong><small id="liveDate">--</small></div></section><section class="kpi-grid"><article class="kpi-card"><span class="kpi-icon">◈</span><div><small>Applications</small><strong id="appCount">0</strong></div></article><article class="kpi-card"><span class="kpi-icon">✓</span><div><small>Available</small><strong id="availableCount">0</strong></div></article><article class="kpi-card"><span class="kpi-icon">⚡</span><div><small>Quick Access</small><strong id="quickCount">0</strong></div></article><article class="kpi-card"><span class="kpi-icon">🔐</span><div><small>Access Level</small><strong id="accessLevel">—</strong></div></article></section><section class="toolbar"><div class="search-wrap"><span>⌕</span><input id="appSearch" type="search" placeholder="Search applications..."></div><select id="categoryFilter"><option value="all">All Categories</option></select><button class="refresh-btn" id="refreshBtn">↻ Refresh</button></section><section class="dashboard-section" id="myPortalsSection">
+  <div class="section-heading">
+    <div>
+      <span class="section-kicker">SECTION 01</span>
+      <h2>Web Portals Made by Me</h2>
+      <p>All your departmental web applications and dashboards in one place.</p>
+    </div>
+    <span class="section-count" id="myPortalsCount">0 Portals</span>
+  </div>
+  <div id="myPortalsGrid" class="app-grid"></div>
+</section>
+
+<section class="dashboard-section" id="internetSection">
+  <div class="section-heading">
+    <div>
+      <span class="section-kicker">SECTION 02</span>
+      <h2>Different Websites on Internet</h2>
+      <p>Frequently used official and useful websites.</p>
+    </div>
+    <span class="section-count" id="internetCount">0 Websites</span>
+  </div>
+  <div id="internetGrid" class="app-grid"></div>
+</section>
+
+<section class="dashboard-section" id="googleSection">
+  <div class="section-heading">
+    <div>
+      <span class="section-kicker">SECTION 03</span>
+      <h2>Direct Links to Google Services</h2>
+      <p>Quick access to Gmail, Google Drive, Google Sheets and other services.</p>
+    </div>
+    <span class="section-count" id="googleCount">0 Links</span>
+  </div>
+  <div id="googleGrid" class="app-grid"></div>
+</section>
+
+<section class="integration-note">
+  <strong>Master Registry</strong>
+  <span>Manage all three sections centrally in <code>app-config.js</code>. Each link opens directly in a new browser tab.</span>
+</section></main><footer class="portal-footer"><div>National Health Mission, West Bengal</div><div>Health &amp; Family Welfare Department • Govt. of West Bengal</div><div id="footerYear"></div></footer><script src="app-config.js"></script><script src="app.js"></script></body></html>

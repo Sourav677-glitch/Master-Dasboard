@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Telemedicine :: Daily AAM-HWCs Performance Report</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Excel -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+
+    <!-- PDF / Image -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+
+<header class="app-header">
+    <div class="header-brand-wrap">
+        <div class="header-logos" aria-label="Government of West Bengal and National Health Mission">
+            <div class="logo-orb"><img src="National Emblem.png" alt="Government of West Bengal"></div>
+            <div class="logo-orb logo-nhm"><img src="NHM logo.png" alt="National Health Mission West Bengal"></div>
+        </div>
+        <div class="header-brand">
+            <div class="eyebrow">GOVERNMENT OF WEST BENGAL • HEALTH &amp; FAMILY WELFARE DEPARTMENT</div>
+            <h1>Daily AAM-HWCs Performance Report</h1>
+            <p>National Health Mission • Telemedicine Monitoring Dashboard</p>
+            <span>Automated daily district-wise performance monitoring for AAM-HWCs, Spoke and HUB Consultations.</span>
+        </div>
+    </div>
+
+    <div class="header-live">
+        <div class="live-label"><span class="live-dot"></span> LIVE SYSTEM TIME</div>
+        <div id="liveDate" class="live-date">--</div>
+        <div id="liveTime" class="live-time">--:--:--</div>
+        <div class="live-zone">IST • INDIA</div>
+    </div>
+</header>
+
+<main class="page">
+
+    <!-- COMPACT UPLOAD PANEL -->
+    <section class="upload-panel">
+
+        <div class="upload-card">
+            <div class="step">01</div>
+
+            <div class="upload-description">
+                <div class="upload-icon">📊</div>
+                <div>
+                    <h2>Referred Consultation Report</h2>
+                    <p>Daily HWC Consultation Referred Summary</p>
+                </div>
+            </div>
+
+            <div class="upload-control">
+                <label for="file1">Choose Excel File</label>
+                <input
+                    type="file"
+                    id="file1"
+                    accept=".xlsx,.xls,.xlsm,.csv"
+                >
+                <div class="selected-file" id="file1Name">No file selected</div>
+            </div>
+        </div>
+
+        <div class="upload-card">
+            <div class="step">02</div>
+
+            <div class="upload-description">
+                <div class="upload-icon">📥</div>
+                <div>
+                    <h2>Received Consultation Report</h2>
+                    <p>Daily HWC Consultation Received Summary</p>
+                </div>
+            </div>
+
+            <div class="upload-control">
+                <label for="file2">Choose Excel File</label>
+                <input
+                    type="file"
+                    id="file2"
+                    accept=".xlsx,.xls,.xlsm,.csv"
+                >
+                <div class="selected-file" id="file2Name">No file selected</div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ACTIONS -->
+    <section class="action-bar">
+        <div class="action-date">
+            <label for="reportDate">REPORT DATE</label>
+            <input type="date" id="reportDate">
+        </div>
+
+        <button class="btn btn-primary" id="generateBtn">
+            ⚡ Generate Daily Report
+        </button>
+
+        <button class="btn btn-secondary" id="resetBtn">
+            ↻ Reset
+        </button>
+
+        <button class="btn btn-danger" id="pdfBtn" disabled>
+            📄 Download PDF
+        </button>
+
+        <button class="btn btn-success" id="excelBtn" disabled>
+            📊 Download Excel
+        </button>
+
+        <button class="btn btn-secondary btn-png" id="pngBtn" disabled>
+            🖼 Export PNG
+        </button>
+
+        <button class="btn btn-followup" id="followUpBtn" disabled>
+            📊 Follow-up needed
+        </button>
+    </section>
+
+    <div id="status" class="status info">
+        Select both raw Excel files and click <strong>Generate Daily Report</strong>.
+    </div>
+
+    <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+        <span id="loadingText">Processing uploaded files...</span>
+    </div>
+
+    <!-- REPORT -->
+    <section id="reportSection" class="report-section hidden">
+
+        <div class="report-paper" id="reportPaper">
+
+            <div class="report-top">
+                <div class="report-title">
+                    <strong>TELEMEDICINE &nbsp; :: &nbsp; DAILY &nbsp; AAM-HWCs &nbsp; PERFORMANCE</strong>
+                </div>
+
+                <div class="report-date-box">
+                    <span>REPORT FOR</span>
+                    <strong id="reportDateText">--</strong>
+                </div>
+            </div>
+
+            <div class="kpi-strip" aria-label="Report KPIs">
+                <div class="kpi-card kpi-zone-card">
+                    <span class="kpi-label">BEST ZONE</span>
+                    <strong id="kpiBestZone">--</strong>
+                    <small>Best overall zone performance</small>
+                </div>
+
+                <div class="kpi-card">
+                    <span class="kpi-label">BEST DISTRICT • SPOKE</span>
+                    <strong id="kpiBestSpoke">--</strong>
+                    <small id="kpiBestSpokeValue">Highest spoke consultation</small>
+                </div>
+
+                <div class="kpi-card">
+                    <span class="kpi-label">BEST DISTRICT • HUB</span>
+                    <strong id="kpiBestHub">--</strong>
+                    <small id="kpiBestHubValue">Highest HUB consultation</small>
+                </div>
+
+                <div class="kpi-card">
+                    <span class="kpi-label">BEST DISTRICT • ACTIVE SPOKE %</span>
+                    <strong id="kpiBestActiveSpoke">--</strong>
+                    <small id="kpiBestActiveSpokeValue">Highest active AAM percentage</small>
+                </div>
+
+                <div class="kpi-card">
+                    <span class="kpi-label">BEST DISTRICT • ACTIVE DOCTOR %</span>
+                    <strong id="kpiBestDoctor">--</strong>
+                    <small id="kpiBestDoctorValue">Highest doctor availability</small>
+                </div>
+
+                <div class="kpi-card kpi-watch-card">
+                    <span class="kpi-label">ZONE TO BE LOOKED</span>
+                    <strong id="kpiWorstZone">--</strong>
+                    <small id="kpiWorstZoneValue">Worst overall zone ranking</small>
+                </div>
+
+                <div class="kpi-card kpi-performer-card kpi-doctor-card">
+                    <span class="kpi-label">TOP 3 DOCTORS • TODAY</span>
+                    <div id="kpiTopDoctors" class="kpi-top-list">
+                        <span class="kpi-empty">Generate report to view</span>
+                    </div>
+                    <small>Highest completed consultations</small>
+                </div>
+
+                <div class="kpi-card kpi-performer-card kpi-aam-card">
+                    <span class="kpi-label">TOP 3 AAMs • TODAY</span>
+                    <div id="kpiTopAAMs" class="kpi-top-list">
+                        <span class="kpi-empty">Generate report to view</span>
+                    </div>
+                    <small>Highest completed consultations</small>
+                </div>
+
+                <div class="kpi-card kpi-under10-card">
+                    <span class="kpi-label">AAMs &lt; 10 CONSULTATIONS</span>
+                    <strong id="kpiAamUnder10">--</strong>
+                    <small>Out of 9,808 operational AAMs</small>
+                </div>
+
+                <div class="kpi-card kpi-super-card">
+                    <span class="kpi-label">SUPER SPECIALITY CONSULTATIONS</span>
+                    <div id="kpiSuperSpeciality" class="kpi-facility-list"><span class="kpi-empty">Generate report to view</span></div>
+                    
+                </div>
+
+                <div class="kpi-card kpi-uphc-spoke-card">
+                    <span class="kpi-label">Total AAM-UPHCs SPOKE CONSULTATIONS • TODAY</span>
+                    <strong id="kpiAamUphcSpoke">--</strong>
+                   
+                </div>
+
+                <div class="kpi-card kpi-phc-spoke-card">
+                    <span class="kpi-label">Total AAM-PHCs SPOKE CONSULTATIONS • TODAY</span>
+                    <strong id="kpiAamPhcSpoke">--</strong>
+                   
+                </div>
+
+                <div class="kpi-card kpi-active-doctors-card">
+                    <span class="kpi-label">Total ACTIVE DOCTORS • TODAY</span>
+                    <strong id="kpiActiveDoctorsToday">--</strong>
+                    
+                </div>
+            </div>
+
+            <!-- FOLLOW-UP ANALYTICS -->
+            <section id="followUpAnalytics" class="followup-analytics hidden" aria-label="Follow-up analytics">
+                <div class="followup-head">
+                    <div>
+                        <span class="followup-kicker">FOLLOW-UP NEEDED</span>
+                        <h2>District-wise Follow-up Analytics</h2>
+                        <p>Priority view of AAM consultation gaps and HUB wise Super Speciality Consultations.</p>
+                    </div>
+                    <button type="button" class="followup-close" id="followUpClose">×</button>
+                </div>
+
+                <div class="followup-grid">
+                    <article class="followup-chart-card followup-zero-card">
+                        <div class="followup-chart-title">
+                            <span class="chart-dot"></span>
+                            <div>
+                                <strong>AAMs with 0 Consultation • TODAY</strong>
+                                
+                            </div>
+                        </div>
+                        <div id="followupZeroChart" class="followup-bars"></div>
+                    </article>
+
+                    <article class="followup-chart-card followup-low-card">
+                        <div class="followup-chart-title">
+                            <span class="chart-dot"></span>
+                            <div>
+                                <strong>AAMs with &lt; 5 Consultations • TODAY </strong>
+                                
+                            </div>
+                        </div>
+                        <div id="followupLowChart" class="followup-bars"></div>
+                    </article>
+
+                    <article class="followup-chart-card followup-super-card">
+                        <div class="followup-chart-title">
+                            <span class="chart-dot"></span>
+                            <div>
+                                <strong>HUB wise Super Speciality Consultations • TODAY</strong>
+                                
+                            </div>
+                        </div>
+                        <div id="followupSuperChart" class="followup-bars"></div>
+                    </article>
+                </div>
+
+                <div class="followup-total-card" id="followupTotals" aria-label="Follow-up analytics totals">
+                    <div class="followup-total-item total-red">
+                        <span>Total No. of 0 Consultation AAMs • TODAY</span>
+                        <strong id="followupZeroTotal">0</strong>
+                    </div>
+                    <div class="followup-total-item total-amber">
+                        <span>Total No. of AAMs with &lt; 5 Consultations • TODAY</span>
+                        <strong id="followupLowTotal">0</strong>
+                    </div>
+                    <div class="followup-total-item total-green">
+                        <span>Total Super Speciality Consultations • TODAY</span>
+                        <strong id="followupSuperTotal">0</strong>
+                    </div>
+                </div>
+            </section>
+
+            <div class="table-scroll">
+
+                <table id="reportTable" class="performance-table">
+
+                    <colgroup>
+                        <col class="col-sl">
+                        <col class="col-zone">
+                        <col class="col-district">
+                        <col class="col-aam">
+                        <col class="col-aam">
+                        <col class="col-aam">
+                        <col class="col-aam">
+                        <col class="col-rank">
+                        <col class="col-doctor">
+                        <col class="col-doctor">
+                        <col class="col-doctor">
+                        <col class="col-rank">
+                        <col class="col-performance">
+                        <col class="col-performance">
+                        <col class="col-rank">
+                        <col class="col-performance">
+                        <col class="col-performance">
+                        <col class="col-rank">
+                        <col class="col-overall">
+                    </colgroup>
+
+                    <thead>
+                        <tr class="header-row-main">
+                            <th rowspan="3">Sl. No.</th>
+                            <th rowspan="3">ZONE</th>
+                            <th rowspan="3" class="district-col">DISTRICTS</th>
+
+                            <th colspan="5" class="active-spokes">ACTIVE SPOKES</th>
+
+                            <th colspan="4" class="doctor-header">DOCTORS AVAILABILITY</th>
+
+                            <th colspan="6" class="performance-header">PERFORMANCE ANALYSIS</th>
+
+                            <th rowspan="3" class="overall-header">Overall<br>Rank</th>
+                        </tr>
+
+                        <tr>
+                            <th rowspan="2" class="active-spokes">No of<br>Operational<br>AAMs [A]</th>
+                            <th rowspan="2" class="active-spokes">**No of active<br>AAMs [B]</th>
+                            <th rowspan="2" class="active-spokes">**No of active<br>AAMs [Z] [&gt;=10]</th>
+                            <th rowspan="2" class="active-spokes">% Active<br>AAMs [Z/A*100]</th>
+                            <th rowspan="2" class="active-spokes">Rank</th>
+
+                            <th rowspan="2" class="doctor-header">Expected No of<br>Doctors (1:5) [C]</th>
+                            <th rowspan="2" class="doctor-header">Active<br>Doctors [D]</th>
+                            <th rowspan="2" class="doctor-header">%age Availability<br>[D/C*100]</th>
+                            <th rowspan="2" class="doctor-header">Rank</th>
+
+                            <th colspan="3" class="performance-header">Spoke Performance</th>
+                            <th colspan="3" class="performance-header">Hub Performance</th>
+                        </tr>
+
+                        <tr>
+                            <th class="performance-header">AAM Total<br>Consultations [E]</th>
+                            <th class="performance-header">No of consultations<br>per operational AAM</th>
+                            <th class="performance-header">Rank</th>
+
+                            <th class="performance-header">*** HUB Total<br>Consultations [F]</th>
+                            <th class="performance-header">No of consultations<br>per Active Doctor [F/D]</th>
+                            <th class="performance-header">Rank</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="reportBody"></tbody>
+
+                    <tfoot id="reportFooter"></tfoot>
+
+                </table>
+
+            </div>
+
+            <!-- WEST BENGAL SUMMARY -->
+            <div class="state-summary">
+
+                <div class="summary-total-row">
+                    <div class="summary-total-title">Total Consultation : West Bengal</div>
+
+                    <div class="summary-spoke-label">SPOKE</div>
+                    <div class="summary-number" id="summarySpoke">0</div>
+
+                    <div class="summary-hub-label">HUB</div>
+                    <div class="summary-number" id="summaryHub">0</div>
+                </div>
+
+                <div class="summary-note-grid">
+
+                    <div class="note-cell note-label">NOTE</div>
+
+                    <div class="note-cell">
+                        <b>* Hub Performance:</b><br>
+                        Number of consultation done by MCH, State Telemedicine Center and Super Specialist Center
+                    </div>
+                    <div class="note-value" id="mchTotal">0</div>
+
+                    <div class="note-cell">
+                        Number of consultation done by AAM–UPHC HUB
+                    </div>
+                    <div class="note-value" id="uphcTotal">0</div>
+
+                    <div class="note-cell">
+                        ## Consultation from Spoke other than AAMs
+                    </div>
+                    <div class="note-value" id="otherSpokeTotal">0</div>
+
+                    <div class="note-cell note-wide">
+                        ***Active Doctor : Doctor's completed at least one consultation
+                    </div>
+                </div>
+
+                <div class="active-aam-note">
+                    ** Active AAM : AAMs completed at least ten consultation
+                    Vide Memo No. HFW/NCD/462/2021 dated 8th October 2021
+                </div>
+
+            </div>
+
+            <div class="report-footer-note">
+                <strong>Generated automatically from the uploaded daily Referred and Received Summary files • Consultation calculations use the <b>Completed</b> column</strong>
+                
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <strong>Health and Family Welfare, Government of West Bengal<strong><br>
+    <strong>Designed & Developed by SPMU : TELEMEDICINE CELL, SWASTHYA BHAWAN, GN-29, Sector-V, Salt Lake City, Kolkata - 700091<strong><br>
+
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
