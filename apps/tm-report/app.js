@@ -165,11 +165,15 @@ document.addEventListener("DOMContentLoaded", () => {
     startLiveClock();
 
     document.getElementById("file1").addEventListener("change", e => {
-        showFileName("file1Name", e.target.files[0]);
+        const file = e.target.files[0];
+        showFileName("file1Name", file);
+        autoSelectReportDate(file);
     });
 
     document.getElementById("file2").addEventListener("change", e => {
-        showFileName("file2Name", e.target.files[0]);
+        const file = e.target.files[0];
+        showFileName("file2Name", file);
+        autoSelectReportDate(file);
     });
 
     document.getElementById("generateBtn").addEventListener("click", generateReport);
@@ -220,21 +224,73 @@ function formatLongDate(value) {
 function formatFileDate(name) {
     if (!name) return null;
 
-    const match = name.match(/(\d{1,2})[-_](\d{1,2})[-_](\d{2,4})/);
+    const text = String(name).replace(/\.[^.]+$/, "");
+    let match;
+    let day;
+    let month;
+    let year;
 
-    if (!match) return null;
+    // 1) DD-MM-YYYY / DD_MM_YYYY / DD.MM.YYYY
+    match = text.match(/(^|[^\d])(\d{1,2})[-_.](\d{1,2})[-_.](\d{2,4})(?!\d)/);
+    if (match) {
+        day = Number(match[2]);
+        month = Number(match[3]);
+        year = Number(match[4]);
+    } else {
+        // 2) YYYY-MM-DD / YYYY_MM_DD / YYYY.MM.DD
+        match = text.match(/(^|[^\d])(\d{4})[-_.](\d{1,2})[-_.](\d{1,2})(?!\d)/);
+        if (match) {
+            year = Number(match[2]);
+            month = Number(match[3]);
+            day = Number(match[4]);
+        } else {
+            // 3) DD Month YYYY / DD-Month-YYYY / DD Month, YYYY
+            const months = {
+                jan: 1, january: 1, feb: 2, february: 2, mar: 3, march: 3,
+                apr: 4, april: 4, may: 5, jun: 6, june: 6, jul: 7, july: 7,
+                aug: 8, august: 8, sep: 9, sept: 9, september: 9, oct: 10,
+                october: 10, nov: 11, november: 11, dec: 12, december: 12
+            };
+            match = text.match(/(^|[^\d])(\d{1,2})[\s._-]+([A-Za-z]+)[\s,._-]+(\d{4})(?!\d)/i);
+            if (match && months[match[3].toLowerCase()]) {
+                day = Number(match[2]);
+                month = months[match[3].toLowerCase()];
+                year = Number(match[4]);
+            }
+        }
+    }
 
-    let day = Number(match[1]);
-    let month = Number(match[2]);
-    let year = Number(match[3]);
-
+    if (!day || !month || !year) return null;
     if (year < 100) year += 2000;
 
-    if (day < 1 || day > 31 || month < 1 || month > 12) {
+    // Validate the actual calendar date, not just the ranges.
+    const candidate = new Date(year, month - 1, day);
+    if (candidate.getFullYear() !== year || candidate.getMonth() !== month - 1 || candidate.getDate() !== day) {
         return null;
     }
 
     return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+function autoSelectReportDate(file) {
+    if (!file) return;
+
+    const detectedDate = formatFileDate(file.name);
+    if (!detectedDate) return;
+
+    const input = document.getElementById("reportDate");
+    if (!input) return;
+
+    // Set the report date immediately when a raw file is selected.
+    // This removes the need to click Generate before the date is populated.
+    input.value = detectedDate;
+    APP.reportDate = detectedDate;
+
+    const status = document.getElementById("status");
+    if (status) {
+        status.innerHTML = `Report date automatically selected: <strong>${formatLongDate(detectedDate)}</strong>`;
+        status.className = "status info";
+    }
 }
 
 /* ==========================================================
@@ -343,7 +399,9 @@ async function generateReport() {
             throw new Error("The Received file contains no data rows.");
         }
 
-        /* Prefer selected report date, but use filename date if present. */
+        /* The upload handlers normally select the report date immediately.
+         * Keep filename detection here as a safe fallback for programmatic
+         * uploads or browsers that do not fire the change handler as expected. */
         let dateValue = document.getElementById("reportDate").value;
 
         const filenameDate =

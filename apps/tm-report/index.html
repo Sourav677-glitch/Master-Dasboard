@@ -19,24 +19,24 @@
 <body>
 
 <header class="app-header">
-    <div class="header-brand-wrap">
-        <div class="header-logos" aria-label="Government of West Bengal and National Health Mission">
+    <div class="brand-wrap">
+        <div class="logos" aria-label="Government of West Bengal and National Health Mission">
             <div class="logo-orb"><img src="National Emblem.png" alt="Government of West Bengal"></div>
-            <div class="logo-orb logo-nhm"><img src="NHM logo.png" alt="National Health Mission West Bengal"></div>
+            <div class="logo-orb"><img src="NHM logo.png" alt="National Health Mission West Bengal"></div>
         </div>
-        <div class="header-brand">
+        <div>
             <div class="eyebrow">GOVERNMENT OF WEST BENGAL • HEALTH &amp; FAMILY WELFARE DEPARTMENT</div>
             <h1>Daily AAM-HWCs Performance Report</h1>
             <p>National Health Mission • Telemedicine Monitoring Dashboard</p>
-            <span>Automated daily district-wise performance monitoring for AAM-HWCs, Spoke and HUB Consultations.</span>
+            <span class="header-description">Automated daily district-wise performance monitoring for AAM-HWCs, Spoke and HUB Consultations.</span>
         </div>
     </div>
 
-    <div class="header-live">
-        <div class="live-label"><span class="live-dot"></span> LIVE SYSTEM TIME</div>
-        <div id="liveDate" class="live-date">--</div>
-        <div id="liveTime" class="live-time">--:--:--</div>
-        <div class="live-zone">IST • INDIA</div>
+    <div class="live-box" aria-label="Live system time">
+        <div class="live-pill"><span class="live-dot"></span><span>LIVE SYSTEM</span></div>
+        <div class="live-date-row"><span class="calendar-icon">▦</span><strong id="liveDate">--</strong></div>
+        <div class="live-clock-row"><span class="clock-icon">◷</span><b id="liveTime">--:--:--</b></div>
+        <div class="live-zone"><span class="zone-line saffron-line"></span><small>IST</small><i></i><small>INDIA</small><span class="zone-line green-line"></span></div>
     </div>
 </header>
 
