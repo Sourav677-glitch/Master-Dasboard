@@ -67,10 +67,18 @@ const INTERNET_WEBSITES = [
     role: "both"
   },
   {
+    id: "wb-finance",
+    name: "Finance Department Portal",
+    description: "Official Finance Department website of West Bengal.",
+    icon: "💰",
+    url: "https://finance.wb.gov.in/",
+    role: "both"
+  },
+  {
     id: "wb-orders",
     name: "WB Departmental orders Portal",
     description: "Official Health & Family Welfare Department portal.",
-    icon: "🏥",
+    icon: "📄",
     url: "https://wbxpress.com/circulars/finance/",
     role: "both"
   },
@@ -86,7 +94,7 @@ const INTERNET_WEBSITES = [
     id: "swasth-bharat",
     name: "Swasth Bharat Portal",
     description: "Swasth Bharat Mission (SBM) portal for monitoring health and wellness centers across India.",
-    icon: "🏥",
+    icon: "IN",
     url: "https://swasthbharat.mohfw.gov.in/",
     role: "both"
   },
