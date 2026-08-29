@@ -1,0 +1,11 @@
+MASTER DASHBOARD - UPDATE NOTES
+
+Implemented fixes:
+1. Application search now filters all three sections correctly in real time.
+2. Category filter is fixed. The selected category now correctly maps to each portal section.
+3. Refresh button now rebuilds the dashboard, KPIs and visible cards with loading animation and update confirmation.
+4. Added Clear Filters button and no-results recovery button.
+5. Empty sections automatically hide during search/filtering.
+6. Added live matching-results summary.
+7. Improved professional application-directory UI, spacing, buttons, focus states and responsive behaviour.
+8. Preserved existing application registry, login flow, role-based access and links.

@@ -164,17 +164,9 @@ function initDashboard() {
   const footerYear = document.getElementById('footerYear');
 
   if (userName) userName.textContent = a.username;
-  if (userRole) {
-    userRole.textContent =
-      a.role === 'admin' ? 'Administrator' : 'Authorized User';
-  }
-  if (accessLevel) {
-    accessLevel.textContent = a.role === 'admin' ? 'ADMIN' : 'USER';
-  }
-  if (footerYear) {
-    footerYear.textContent =
-      `© ${new Date().getFullYear()} Government of West Bengal`;
-  }
+  if (userRole) userRole.textContent = a.role === 'admin' ? 'Administrator' : 'Authorized User';
+  if (accessLevel) accessLevel.textContent = a.role === 'admin' ? 'ADMIN' : 'USER';
+  if (footerYear) footerYear.textContent = `© ${new Date().getFullYear()} Government of West Bengal`;
 
   setupCategories();
   renderApps();
@@ -189,125 +181,175 @@ function initDashboard() {
   }
 
   const appSearch = document.getElementById('appSearch');
-  if (appSearch) appSearch.addEventListener('input', renderApps);
+  if (appSearch) {
+    appSearch.addEventListener('input', debounce(() => renderApps(), 120));
+    appSearch.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        appSearch.value = '';
+        renderApps();
+      }
+    });
+  }
 
   const categoryFilter = document.getElementById('categoryFilter');
   if (categoryFilter) categoryFilter.addEventListener('change', renderApps);
 
+  const clearFilters = () => {
+    if (appSearch) appSearch.value = '';
+    if (categoryFilter) categoryFilter.value = 'all';
+    renderApps();
+    appSearch?.focus();
+  };
+
+  const clearBtn = document.getElementById('clearFiltersBtn');
+  if (clearBtn) clearBtn.addEventListener('click', clearFilters);
+
+  const noResultsClearBtn = document.getElementById('noResultsClearBtn');
+  if (noResultsClearBtn) noResultsClearBtn.addEventListener('click', clearFilters);
+
   const refreshBtn = document.getElementById('refreshBtn');
-  if (refreshBtn) refreshBtn.addEventListener('click', renderApps);
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', () => refreshDashboard(refreshBtn));
+  }
+}
+
+function debounce(fn, wait = 120) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), wait);
+  };
+}
+
+async function refreshDashboard(button) {
+  if (button?.dataset.refreshing === 'true') return;
+  if (button) {
+    button.dataset.refreshing = 'true';
+    button.classList.add('is-refreshing');
+    button.disabled = true;
+  }
+
+  // Registry data is local, so refresh means rebuilding categories/cards and KPIs.
+  setupCategories();
+  await new Promise(resolve => requestAnimationFrame(resolve));
+  renderApps();
+  updateRefreshStatus();
+
+  setTimeout(() => {
+    if (button) {
+      button.dataset.refreshing = 'false';
+      button.classList.remove('is-refreshing');
+      button.disabled = false;
+    }
+  }, 500);
+}
+
+function updateRefreshStatus() {
+  const status = document.getElementById('refreshStatus');
+  if (!status) return;
+  status.textContent = `Updated ${new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}`;
+  status.classList.add('show');
+  clearTimeout(updateRefreshStatus._timer);
+  updateRefreshStatus._timer = setTimeout(() => status.classList.remove('show'), 2400);
 }
 
 /* ---------------- APPLICATIONS ---------------- */
 
 function setupCategories() {
-  const s = document.getElementById('categoryFilter');
-  if (!s || typeof MASTER_APPS === 'undefined') return;
+  const select = document.getElementById('categoryFilter');
+  if (!select) return;
 
-  const existing = new Set(
-    Array.from(s.options).map(option => option.value)
-  );
+  const currentValue = select.value || 'all';
+  const categories = [
+    { value: 'all', label: 'All Categories' },
+    { value: 'My Web Portals', label: 'My Web Portals' },
+    { value: 'Internet Websites', label: 'Internet Websites' },
+    { value: 'Google Services', label: 'Google Services' }
+  ];
 
-  const cats = [...new Set(
-    MASTER_APPS.map(a => a.category).filter(Boolean)
-  )].sort();
+  select.innerHTML = categories.map(category =>
+    `<option value="${escapeAttr(category.value)}">${escapeHtml(category.label)}</option>`
+  ).join('');
 
-  cats.forEach(category => {
-    if (existing.has(category)) return;
+  select.value = categories.some(x => x.value === currentValue) ? currentValue : 'all';
+}
 
-    const option = document.createElement('option');
-    option.value = category;
-    option.textContent = category;
-    s.appendChild(option);
+function getSectionCategory(gridId) {
+  return {
+    myPortalsGrid: 'My Web Portals',
+    internetGrid: 'Internet Websites',
+    googleGrid: 'Google Services'
+  }[gridId] || 'Other';
+}
+
+function getAccessibleItems(list, category) {
+  const auth = getAuth();
+  if (!auth) return [];
+
+  const query = (document.getElementById('appSearch')?.value || '').toLowerCase().trim();
+  const selectedCategory = document.getElementById('categoryFilter')?.value || 'all';
+  const normalizedQuery = query.replace(/\s+/g, ' ');
+
+  return list.filter(item => {
+    const allowed = item.role === 'both' || item.role === auth.role;
+    const categoryOK = selectedCategory === 'all' || selectedCategory === category;
+    const haystack = `${item.name || ''} ${item.description || ''} ${category} ${item.section || ''}`
+      .toLowerCase()
+      .replace(/\s+/g, ' ');
+
+    return allowed && categoryOK && haystack.includes(normalizedQuery);
   });
 }
 
 function renderApps() {
-  const a = getAuth();
-  if (!a) return;
+  const auth = getAuth();
+  if (!auth) return;
 
-  const q = (
-    document.getElementById('appSearch')?.value || ''
-  ).toLowerCase().trim();
+  const portalItems = getAccessibleItems(WEB_PORTALS, 'My Web Portals');
+  const internetItems = getAccessibleItems(INTERNET_WEBSITES, 'Internet Websites');
+  const googleItems = getAccessibleItems(GOOGLE_LINKS, 'Google Services');
 
-  const c = document.getElementById('categoryFilter')?.value || 'all';
+  renderSection('myPortalsGrid', portalItems, 'No matching web portals found.');
+  renderSection('internetGrid', internetItems, 'No matching websites found.');
+  renderSection('googleGrid', googleItems, 'No matching Google services found.');
 
-  const filterList = list => list.filter(item => {
-    const allowed = item.role === 'both' || item.role === a.role;
-    const categoryOK = c === 'all' || item.category === c;
-    const haystack = `${item.name} ${item.description} ${item.category || ''}`
-      .toLowerCase();
-
-    return allowed && categoryOK && haystack.includes(q);
-  });
-
-  renderSection(
-    'myPortalsGrid',
-    filterList(WEB_PORTALS),
-    'No web portals match your search.'
-  );
-
-  renderSection(
-    'internetGrid',
-    filterList(INTERNET_WEBSITES),
-    'No websites match your search.'
-  );
-
-  renderSection(
-    'googleGrid',
-    filterList(GOOGLE_LINKS),
-    'No Google links match your search.'
-  );
-
-  const visible = [
-    ...filterList(WEB_PORTALS),
-    ...filterList(INTERNET_WEBSITES),
-    ...filterList(GOOGLE_LINKS)
-  ];
-
+  const visible = [...portalItems, ...internetItems, ...googleItems];
   const appCount = document.getElementById('appCount');
   const availableCount = document.getElementById('availableCount');
   const quickCount = document.getElementById('quickCount');
+  const resultsSummary = document.getElementById('resultsSummary');
 
   if (appCount) appCount.textContent = visible.length;
-  if (availableCount) {
-    availableCount.textContent =
-      visible.filter(x => x.url && x.url !== '#').length;
+  if (availableCount) availableCount.textContent = visible.filter(x => x.url && x.url !== '#').length;
+  if (quickCount) quickCount.textContent = portalItems.length;
+
+  updateCount('myPortalsCount', portalItems.length, 'Portal', 'Portals');
+  updateCount('internetCount', internetItems.length, 'Website', 'Websites');
+  updateCount('googleCount', googleItems.length, 'Link', 'Links');
+
+  const query = (document.getElementById('appSearch')?.value || '').trim();
+  const selectedCategory = document.getElementById('categoryFilter')?.value || 'all';
+  const isFiltered = Boolean(query) || selectedCategory !== 'all';
+
+  if (resultsSummary) {
+    resultsSummary.textContent = isFiltered
+      ? `${visible.length} matching ${visible.length === 1 ? 'application' : 'applications'} found`
+      : `${visible.length} applications available`;
   }
-  if (quickCount) {
-    quickCount.textContent =
-      WEB_PORTALS.filter(x => x.role === 'both' || x.role === a.role).length;
-  }
 
-  updateCount(
-    'myPortalsCount',
-    filterList(WEB_PORTALS).length,
-    'Portal',
-    'Portals'
-  );
+  const sectionStates = [
+    ['myPortalsSection', portalItems.length],
+    ['internetSection', internetItems.length],
+    ['googleSection', googleItems.length]
+  ];
 
-  updateCount(
-    'internetCount',
-    filterList(INTERNET_WEBSITES).length,
-    'Website',
-    'Websites'
-  );
-
-  updateCount(
-    'googleCount',
-    filterList(GOOGLE_LINKS).length,
-    'Link',
-    'Links'
-  );
-
-  ['myPortalsSection', 'internetSection', 'googleSection'].forEach(id => {
+  sectionStates.forEach(([id, count]) => {
     const section = document.getElementById(id);
-    if (!section) return;
-
-    const grid = section.querySelector('.app-grid');
-    section.style.display =
-      grid && grid.children.length ? 'block' : 'none';
+    if (section) section.hidden = count === 0;
   });
+
+  const noResults = document.getElementById('noResultsState');
+  if (noResults) noResults.hidden = visible.length !== 0;
 }
 
 function updateCount(id, number, singular, plural) {
