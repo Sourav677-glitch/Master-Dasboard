@@ -1159,7 +1159,7 @@ function renderReport(rows, referredRows = [], receivedRows = []) {
     renderStateFooter(rows);
 
     document.getElementById("reportDateText").textContent =
-        formatLongDate(APP.reportDate);
+        `${formatLongDate(APP.reportDate)} | 5PM`;
 
     renderSummary();
     renderKPI(referredRows, receivedRows);

@@ -2452,3 +2452,98 @@ color: #ffffff !important;font-size: 11.5px !important;font-weight: 800 !importa
   .live-clock-row b{font-size:25px !important;}
   .live-date-row strong{font-size:14px !important;}
 }
+
+
+/* ================================================================
+   UPHC-STYLE REPORT HEADER — exact visual treatment requested
+   Applied only to the TM report header; report logic remains intact.
+   ================================================================ */
+.report-paper{
+  padding:12px !important;
+  border-radius:14px !important;
+  border:1px solid rgba(120,139,160,.48) !important;
+  background:#fff !important;
+  box-shadow:0 18px 45px rgba(16,45,85,.13),0 3px 10px rgba(16,45,85,.06) !important;
+  overflow:visible !important;
+}
+.report-head{
+  position:relative !important;
+  display:flex !important;
+  justify-content:space-between !important;
+  align-items:center !important;
+  min-height:92px !important;
+  margin-bottom:10px !important;
+  padding:18px 20px !important;
+  overflow:hidden !important;
+  border-radius:12px !important;
+  background:
+    radial-gradient(ellipse 34% 80% at 3% 0%,rgba(255,153,0,.25),transparent 68%),
+    radial-gradient(ellipse 30% 80% at 97% 0%,rgba(0,166,81,.24),transparent 68%),
+    linear-gradient(180deg,#fff,#fbfdff) !important;
+  color:#102d55 !important;
+  border:1px solid rgba(16,45,85,.12) !important;
+}
+.report-head::before{
+  content:"";
+  position:absolute;
+  left:-4%; right:-4%; top:-38px;
+  height:78px;
+  background:
+    linear-gradient(170deg,transparent 0 27%,rgba(255,153,0,.82) 38%,rgba(255,111,0,.45) 52%,transparent 70%),
+    linear-gradient(10deg,transparent 0 38%,rgba(0,166,81,.75) 48%,rgba(0,128,64,.42) 64%,transparent 82%);
+  pointer-events:none;
+}
+.report-head > *{position:relative;z-index:1}
+.report-kicker{
+  color:#294766 !important;
+  font-size:11px !important;
+  letter-spacing:1.8px !important;
+  font-weight:900 !important;
+  text-transform:uppercase;
+}
+.report-head h2{
+  margin:3px 0 !important;
+  color:#102d55 !important;
+  font-size:27px !important;
+  line-height:1.08 !important;
+  font-weight:950 !important;
+  letter-spacing:.2px !important;
+}
+.report-head p{
+  margin:0 !important;
+  color:#294766 !important;
+  font-size:11px !important;
+  font-weight:600 !important;
+  line-height:1.35 !important;
+}
+.report-date{
+  flex:0 0 auto;
+  min-width:250px;
+  text-align:center !important;
+  background:rgba(16,45,85,.06) !important;
+  border:1px solid rgba(16,45,85,.12) !important;
+  border-radius:10px !important;
+  padding:11px 15px !important;
+}
+.report-date span{
+  display:block !important;
+  color:#294766 !important;
+  font-size:15px !important;
+  line-height:1.1;
+  letter-spacing:1px !important;
+  font-weight:800 !important;
+}
+.report-date strong{
+  display:block;
+  margin-top:4px;
+  color:#102d55 !important;
+  font-size:15px !important;
+  font-weight:950 !important;
+  white-space:nowrap;
+}
+@media(max-width:700px){
+  .report-head{align-items:flex-start !important;padding:13px 15px !important;gap:10px}
+  .report-head h2{font-size:23px !important}
+  .report-date{min-width:135px;margin-left:0 !important}
+  .report-date span,.report-date strong{font-size:11px !important}
+}
