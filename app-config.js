@@ -8,20 +8,28 @@
 
 const WEB_PORTALS = [
   {
-    id: "it-maintenance",
-    name: "IT Logistics Maintainance Dashboard",
-    description: "IT equipment maintenance, tracking and analytics portal.",
-    icon: "💻",
-    url: "https://sourav677-glitch.github.io/IT-Dashboard-Tracking/",
-    role: "admin"
-  },
-  {
     id: "aam-hwc",
     name: "Daily AAM-HWCs Performance Dashboard",
     description: "Daily district-wise AAM-HWC, spoke and hub telemedicine performance monitoring.",
     icon: "📊",
     url: "https://sourav677-glitch.github.io/AAM-HWCs-Daily-Performance-Dashboard/",
     role: "both"
+  },
+  {
+    id: "aam-uphc",
+    name: "Daily AAM-UPHCs Performance Dashboard",
+    description: "Daily district-wise AAM-UPHCs, spoke and hub telemedicine performance monitoring.",
+    icon: "📊",
+    url: "https://sourav677-glitch.github.io/AAM-UPHCs-Daily-Performance-Dashboard/",
+    role: "both"
+  },
+  {
+    id: "it-maintenance",
+    name: "IT Logistics Maintainance Dashboard",
+    description: "IT equipment maintenance, tracking and analytics portal.",
+    icon: "💻",
+    url: "https://sourav677-glitch.github.io/IT-Dashboard-Tracking/",
+    role: "admin"
   },
   {
     id: "apps-script-portal-1",
@@ -51,7 +59,7 @@ const WEB_PORTALS = [
 
 const INTERNET_WEBSITES = [
   {
-    id: "wb-gov",
+    id: "wb-health",
     name: "Health & Family Welfare Department Portal",
     description: "Official Government of West Bengal website.",
     icon: "🏛️",
@@ -59,27 +67,51 @@ const INTERNET_WEBSITES = [
     role: "both"
   },
   {
-    id: "wb-health",
-    name: "Health & Family Welfare Department",
+    id: "wb-orders",
+    name: "WB Departmental orders Portal",
     description: "Official Health & Family Welfare Department portal.",
     icon: "🏥",
-    url: "https://www.wbhealth.gov.in/",
+    url: "https://wbxpress.com/circulars/finance/",
     role: "both"
   },
   {
-    id: "nhm-india",
-    name: "National Health Mission",
-    description: "National Health Mission, Ministry of Health & Family Welfare.",
+    id: "healthkpi",
+    name: "WB Health KPI Portal",
+    description: "Official Health & Family Welfare Department portal for monitoring key performance indicators.",
     icon: "🩺",
-    url: "https://nhm.gov.in/",
+    url: "https://healthkpi.wbhealth.gov.in/",
     role: "both"
   },
   {
-    id: "mygov",
-    name: "MyGov India",
-    description: "Government of India's citizen engagement platform.",
-    icon: "🇮🇳",
-    url: "https://www.mygov.in/",
+    id: "swasth-bharat",
+    name: "Swasth Bharat Portal",
+    description: "Swasth Bharat Mission (SBM) portal for monitoring health and wellness centers across India.",
+    icon: "🏥",
+    url: "https://swasthbharat.mohfw.gov.in/",
+    role: "both"
+  },
+  {
+    id: "tele-medicine",
+    name: "Tele-Medicine Admin Portal",
+    description: "Tele-Medicine platform for remote patient consultation and healthcare services.",
+    icon: "🏥",
+    url: "https://swasthyaingit.in/#/admin/signin",
+    role: "both"
+  },
+  {
+    id: "tele-medicine",
+    name: "Tele-Medicine User Portal",
+    description: "Tele-Medicine platform for remote patient consultation and healthcare services.",
+    icon: "🏥",
+    url: "https://swasthyaingit.in/#",
+    role: "both"
+  },
+  {
+    id: "attendance-portal",
+    name: "Attendance Portal",
+    description: "Attendance management platform for tracking employee attendance.",
+    icon: "📊",
+    url: "https://wbhealth.ezeehrlite.com/?AspxAutoDetectCookieSupport=1",
     role: "both"
   }
 ];
