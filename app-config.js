@@ -28,7 +28,7 @@ const WEB_PORTALS = [
     name: "Daily AAM-UPHCs Performance Dashboard",
     description: "Daily district-wise AAM-UPHCs, spoke and hub telemedicine performance monitoring.",
     icon: "📊",
-    url: "https://sourav677-glitch.github.io/AAM-UPHCs-Daily-Performance-Dashboard/",
+    url: "https://sourav677-glitch.github.io/Telemedicine_AAM_UPHC_Performance_Dashboard/",
     role: "both"
   },
   {
