@@ -17,6 +17,14 @@ const WEB_PORTALS = [
   },
   {
     id: "aam-uphc",
+    name: "Daily PHC_SB_MCH Performance Dashboard",
+    description: "Daily district-wise PHC_SB_MCH, spoke and hub telemedicine performance monitoring.",
+    icon: "📊",
+    url: "https://sourav677-glitch.github.io/Telemedicine_PHC_SB_MCH-Report-Portal/",
+    role: "both"
+  },
+  {
+    id: "aam-uphc",
     name: "Daily AAM-UPHCs Performance Dashboard",
     description: "Daily district-wise AAM-UPHCs, spoke and hub telemedicine performance monitoring.",
     icon: "📊",
@@ -33,6 +41,14 @@ const WEB_PORTALS = [
   },
   {
     id: "apps-script-portal-1",
+    name: "Tele-Neurology Management Portal",
+    description: "Departmental web application hosted on Google Apps Script.",
+    icon: "🌐",
+    url: "https://script.google.com/macros/s/AKfycbzmyTaxEDCoJiG-qc67M8WCV0uuZ2GRXMtKUtoyqaKGXk1xYE5pfZbCsdS-NQDiwYvc-Q/exec",
+    role: "both"
+  },
+  {
+    id: "apps-script-portal-2",
     name: "Hospital Management Portal",
     description: "Departmental web application hosted on Google Apps Script.",
     icon: "🌐",
@@ -40,7 +56,7 @@ const WEB_PORTALS = [
     role: "both"
   },
   {
-    id: "apps-script-portal-2",
+    id: "apps-script-portal-3",
     name: "Logistics Management Portal",
     description: "Departmental web application hosted on Google Apps Script.",
     icon: "🌐",
@@ -48,7 +64,7 @@ const WEB_PORTALS = [
     role: "both"
   },
   {
-    id: "apps-script-portal-3",
+    id: "apps-script-portal-4",
     name: "Document Management Portal",
     description: "Departmental web application hosted on Google Apps Script.",
     icon: "🌐",
@@ -79,7 +95,7 @@ const INTERNET_WEBSITES = [
     name: "WB Departmental orders Portal",
     description: "Official Health & Family Welfare Department portal.",
     icon: "📄",
-    url: "https://wbxpress.com/circulars/finance/",
+    url: "https://wbxpress.com/",
     role: "both"
   },
   {
