@@ -70,7 +70,32 @@ const WEB_PORTALS = [
     icon: "🌐",
     url: "https://script.google.com/macros/s/AKfycbwOymmDdM71APcgHVn9ADegRzXIQygONbeWKp1P3-qkCyz5duaS715HMPHDg7-Fo1IWVA/exec",
     role: "both"
-  }
+  },
+  {
+    id: "apps-script-portal-4",
+    name: "Dormant Analysis Portal for Telemedicine",
+    description: "Departmental web application hosted on Google Apps Script.",
+    icon: "🌐",
+    url: "https://script.google.com/macros/s/AKfycbxOBNemIg-grplDYz2hSU3CYHiUwckjS5xI8RXa_gCNZpbYApjydm_7CG4C8YRlAsUm/exec",
+    role: "both"
+  },
+  {
+    id: "apps-script-portal-4",
+    name: "Procurement Management Portal",
+    description: "Departmental web application hosted on Google Apps Script.",
+    icon: "🌐",
+    url: "https://script.google.com/macros/s/AKfycbzQN5DEswKIMWeWo3Lyef2jng7xslx8C0eRayGVSCY1QAaQtgrjVVyxGaRGFpsnK9I/exec",
+    role: "both"
+  },
+{
+    id: "apps-script-portal-4",
+    name: "NHM Logistics Management Portal",
+    description: "Departmental web application hosted on Google Apps Script.",
+    icon: "🌐",
+    url: "https://script.google.com/macros/s/AKfycbyBBlzdCaF92vpjiv1Bo08U8cTA5E8hdDBas7klA_0PY6Ve268NLa5gQWugu4YTsMln/exec",
+    role: "both"
+  },
+  
 ];
 
 const INTERNET_WEBSITES = [
