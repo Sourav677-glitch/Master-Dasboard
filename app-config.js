@@ -32,6 +32,14 @@ const WEB_PORTALS = [
     role: "both"
   },
   {
+    id: "aam-uphc",
+    name: "Weekly & Monthly AAM-HWCs Performance Dashboard",
+    description: "Daily district-wise AAM-UPHCs, spoke and hub telemedicine performance monitoring.",
+    icon: "📊",
+    url: "https://sourav677-glitch.github.io/Telemedicine_AAM_HWCs_Average_Performance_Report/",
+    role: "both"
+  },
+  {
     id: "it-maintenance",
     name: "IT Logistics Maintainance Dashboard",
     description: "IT equipment maintenance, tracking and analytics portal.",
