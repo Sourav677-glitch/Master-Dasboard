@@ -160,7 +160,7 @@ const INTERNET_WEBSITES = [
     name: "Attendance Portal",
     description: "Attendance management platform for tracking employee attendance.",
     icon: "📊",
-    url: "https://wbhealth.ezeehrlite.com/?AspxAutoDetectCookieSupport=1",
+    url: "https://dohfw-attendance.zunekolabs.tech/login",
     role: "both"
   }
 ];
